@@ -12,7 +12,7 @@ Este é um projeto simples de CRUD para guitarras, com armazenamento em memória
 1. Clone o repositório:
 
    ```bash
-   git clone https://github.com/seu-repositorio/guitar-crud.git
+   git clone https://github.com/gusstavocardoso/GuitarArtillery.git
 
    ```
 
