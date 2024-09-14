@@ -1,0 +1,15 @@
+{
+  "name": "guitar-crud",
+  "version": "1.0.0",
+  "description": "CRUD de guitarras em Node.js com dados em memória e testes de performance usando Artillery.",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "test:performance": "artillery run tests/guitar-api-performance.yml"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "body-parser": "^1.19.0",
+    "uuid": "^8.3.2"
+  }
+}

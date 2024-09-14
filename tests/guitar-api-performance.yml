@@ -1,0 +1,55 @@
+config:
+  target: "http://localhost:3000"
+  phases:
+    - duration: 60 # Testa por 60 segundos
+      arrivalRate: 10 # 10 requisições por segundo
+
+  # Ativar o plugin expect
+  plugins:
+    expect: {}
+
+scenarios:
+  - name: Criar nova guitarra e usar o ID nas próximas requisições
+    flow:
+      # Criar uma nova guitarra
+      - post:
+          url: "/guitars"
+          json:
+            marca: "Fender"
+            modelo: "Stratocaster"
+            ano: 2022
+            cor: "Branca"
+          # Extrair o ID da resposta e salvar na variável 'guitarId'
+          capture:
+            - json: "$.id" # Assumindo que o campo ID da guitarra retornado na resposta é 'id'
+              as: "guitarId" # Nome da variável que será usada nas próximas requisições
+          expect:
+            - statusCode: 201 # Espera o código de status 201 (Created)
+      # Listar todas as guitarras
+      - get:
+          url: "/guitars"
+          expect:
+            - statusCode: 200 # Espera o código de status 200 (OK)
+
+      # Buscar a guitarra criada por ID
+      - get:
+          url: "/guitars/{{ guitarId }}" # Usa o ID capturado da requisição anterior
+          expect:
+            - statusCode: 200 # Espera o código de status 200 (OK)
+
+      # Atualizar a guitarra criada por ID
+      - put:
+          url: "/guitars/{{ guitarId }}" # Usa o ID capturado
+          json:
+            marca: "Gibson"
+            modelo: "SG"
+            ano: 2023
+            cor: "Preta"
+          expect:
+            - statusCode: 200 # Espera o código de status 200 (OK)
+
+      # Deletar a guitarra criada por ID
+      - delete:
+          url: "/guitars/{{ guitarId }}" # Usa o ID capturado
+          expect:
+            - statusCode: 200 # Espera o código de status 200 (OK)

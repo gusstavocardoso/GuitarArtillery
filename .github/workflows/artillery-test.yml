@@ -1,0 +1,48 @@
+name: Artillery Performance Tests
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  run-performance-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checa o código do repositório
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Configura o Node.js na versão especificada no projeto
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "16" # Defina a versão do Node.js
+
+      # Instala as dependências do projeto
+      - name: Install dependencies
+        run: npm install
+
+      # Inicia a aplicação em background
+      - name: Start the API
+        run: npm start &
+
+      # Aguarda alguns segundos para garantir que o servidor subiu
+      - name: Wait for API to be ready
+        run: sleep 5
+
+      # Executa os testes de performance usando Artillery
+      - name: Run Artillery performance tests
+        run: npm run test:performance
+
+      # Publica os resultados no GitHub Actions logs
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: artillery-test-results
+          path: tests/artillery-test-results.json
